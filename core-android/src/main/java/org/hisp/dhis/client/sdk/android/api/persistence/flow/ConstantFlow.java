@@ -28,8 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -37,7 +42,14 @@ import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 @Table(database = DbDhis.class)
+@TableEndpoint(name = ConstantFlow.NAME, contentProvider = DbDhis.class)
 public final class ConstantFlow extends BaseIdentifiableObjectFlow {
+
+    public static final String NAME = "ConstantFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public static final Mapper<Constant, ConstantFlow> MAPPER = new ConstantMapper();
 
     @Column
@@ -106,5 +118,25 @@ public final class ConstantFlow extends BaseIdentifiableObjectFlow {
         public Class<ConstantFlow> getDatabaseEntityTypeClass() {
             return ConstantFlow.class;
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -35,12 +36,15 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.Model;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbFlowOperation;
@@ -61,7 +65,14 @@ import static android.text.TextUtils.isEmpty;
         @UniqueGroup(groupNumber = ModelLinkFlow.UNIQUE_LINK,
                 uniqueConflict = ConflictAction.REPLACE)
 })
+@TableEndpoint(name = ModelLinkFlow.NAME, contentProvider = DbDhis.class)
 public class ModelLinkFlow extends BaseModelFlow {
+
+    public static final String NAME = "ModelLinkFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     final static int UNIQUE_LINK = 779472;
     final static String KEY_ONE = "modelKeyOne";
     final static String KEY_TWO = "modelKeyTwo";
@@ -282,5 +293,25 @@ public class ModelLinkFlow extends BaseModelFlow {
             throw new IllegalArgumentException("Both keys must be present " +
                     "in model before going to database");
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

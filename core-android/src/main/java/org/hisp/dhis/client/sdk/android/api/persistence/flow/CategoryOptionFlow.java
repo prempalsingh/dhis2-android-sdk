@@ -28,13 +28,44 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 
 @Table(database = DbDhis.class)
+@TableEndpoint(name = CategoryOptionFlow.NAME, contentProvider = DbDhis.class)
 public final class CategoryOptionFlow extends BaseIdentifiableObjectFlow {
 
+    public static final String NAME = "CategoryOptionFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public CategoryOptionFlow() {
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

@@ -30,11 +30,11 @@ package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public class BaseModelFlow extends BaseModel implements Model {
+public abstract class BaseModelFlow extends BaseProviderModel<BaseModelFlow> implements Model {
     public static final String COLUMN_ID = "id";
 
     @Column(name = COLUMN_ID)

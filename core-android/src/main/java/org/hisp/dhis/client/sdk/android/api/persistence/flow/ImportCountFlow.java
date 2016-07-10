@@ -28,15 +28,26 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 
 @Table(database = DbDhis.class)
-public final class ImportCountFlow extends BaseModel {
+@TableEndpoint(name = ImportCountFlow.NAME, contentProvider = DbDhis.class)
+public final class ImportCountFlow extends BaseProviderModel<ImportCountFlow> {
+
+    public static final String NAME = "ImportCountFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -96,5 +107,25 @@ public final class ImportCountFlow extends BaseModel {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

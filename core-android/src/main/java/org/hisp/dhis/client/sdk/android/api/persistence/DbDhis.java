@@ -29,11 +29,17 @@
 package org.hisp.dhis.client.sdk.android.api.persistence;
 
 import com.raizlabs.android.dbflow.annotation.Database;
+import com.raizlabs.android.dbflow.annotation.provider.ContentProvider;
 
+@ContentProvider(authority = DbDhis.AUTHORITY,
+        database = DbDhis.class,
+        baseContentUri = DbDhis.BASE_CONTENT_URI)
 @Database(
         name = DbDhis.NAME, version = DbDhis.VERSION
 )
 public final class DbDhis {
     public static final String NAME = "dhis";
     public static final int VERSION = 3;
+    public static final String AUTHORITY = "org.hisp.dhis.provider";
+    public static final String BASE_CONTENT_URI = "content://";
 }

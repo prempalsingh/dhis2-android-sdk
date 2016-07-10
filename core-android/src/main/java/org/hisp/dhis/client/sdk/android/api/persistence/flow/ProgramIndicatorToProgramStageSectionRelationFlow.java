@@ -28,18 +28,31 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 
 @Table(database = DbDhis.class)
-public final class ProgramIndicatorToProgramStageSectionRelationFlow extends BaseModel {
+@TableEndpoint(name = ProgramIndicatorToProgramStageSectionRelationFlow.NAME, contentProvider = DbDhis.class)
+public final class ProgramIndicatorToProgramStageSectionRelationFlow
+        extends BaseProviderModel<ProgramIndicatorToProgramStageSectionRelationFlow> {
+
+    public static final String NAME = "ProgramIndicatorToProgramStageSectionRelationFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     private final static String PROGRAM_INDICATOR_KEY = "programIndicator";
     private final static String PROGRAM_STAGE_SECTION_KEY = "programStageSection";
 
@@ -91,5 +104,25 @@ public final class ProgramIndicatorToProgramStageSectionRelationFlow extends Bas
 
     public void setProgramStageSection(ProgramStageSectionFlow programStageSection) {
         this.programStageSection = programStageSection;
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

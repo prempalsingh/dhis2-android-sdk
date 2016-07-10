@@ -28,11 +28,16 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -50,7 +55,14 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
                         uniqueConflict = ConflictAction.REPLACE)
         }
 )
+@TableEndpoint(name = StateFlow.NAME, contentProvider = DbDhis.class)
 public final class StateFlow extends BaseModelFlow {
+
+    public static final String NAME = "StateFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public static final org.hisp.dhis.client.sdk.android.common.StateMapper MAPPER = new StateMapper();
     static final int UNIQUE_GROUP_NUMBER = 1;
 
@@ -166,5 +178,25 @@ public final class StateFlow extends BaseModelFlow {
 
             throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

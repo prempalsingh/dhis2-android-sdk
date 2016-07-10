@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -37,14 +39,25 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {@UniqueGroup(
         groupNumber = OrganisationUnitToProgramRelationFlow.UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP,
         uniqueConflict = ConflictAction.REPLACE)})
-public final class OrganisationUnitToProgramRelationFlow extends BaseModel {
+@TableEndpoint(name = OrganisationUnitToProgramRelationFlow.NAME, contentProvider = DbDhis.class)
+public final class OrganisationUnitToProgramRelationFlow
+        extends BaseProviderModel<OrganisationUnitToProgramRelationFlow> {
+
+    public static final String NAME = "OrganisationUnitToProgramRelationFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     final static String ORGANISATION_UNIT_KEY = "organisationUnit";
     final static String PROGRAM_KEY = "program";
     final static int UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP = 56745632;
@@ -99,5 +112,25 @@ public final class OrganisationUnitToProgramRelationFlow extends BaseModel {
 
     public void setProgram(ProgramFlow program) {
         this.program = program;
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

@@ -28,11 +28,16 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -40,7 +45,14 @@ import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
 @Table(database = DbDhis.class)
+@TableEndpoint(name = ProgramRuleFlow.NAME, contentProvider = DbDhis.class)
 public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
+
+    public static final String NAME = "ProgramRuleFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public static final Mapper<ProgramRule, ProgramRuleFlow> MAPPER = new RuleMapper();
 
     private static final String PROGRAM_STAGE_KEY = "programStage";
@@ -191,5 +203,25 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
         public Class<ProgramRuleFlow> getDatabaseEntityTypeClass() {
             return ProgramRuleFlow.class;
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -42,7 +47,14 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
 
 @Table(database = DbDhis.class)
-public final class UserAccountFlow extends BaseModel implements IdentifiableObject {
+@TableEndpoint(name = UserAccountFlow.NAME, contentProvider = DbDhis.class)
+public final class UserAccountFlow extends BaseProviderModel<UserAccountFlow> implements IdentifiableObject {
+
+    public static final String NAME = "UserAccountFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;
     public static Mapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
@@ -359,5 +371,25 @@ public final class UserAccountFlow extends BaseModel implements IdentifiableObje
         public Class<UserAccountFlow> getDatabaseEntityTypeClass() {
             return UserAccountFlow.class;
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

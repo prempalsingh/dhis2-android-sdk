@@ -30,4 +30,9 @@
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <provider
+        android:authorities="org.hisp.dhis.provider"
+        android:exported="true"
+        android:name=".persistence.DbDhis_Provider"/>
 </manifest>

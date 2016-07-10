@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -36,6 +38,9 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -47,7 +52,14 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
                 groupNumber = TrackedEntityDataValueFlow.UNIQUE_EVENT_DATAVALUE,
                 uniqueConflict = ConflictAction.FAIL)
 })
+@TableEndpoint(name = TrackedEntityDataValueFlow.NAME, contentProvider = DbDhis.class)
 public final class TrackedEntityDataValueFlow extends BaseModelFlow {
+
+    public static final String NAME = "TrackedEntityDataValueFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public static final Mapper<TrackedEntityDataValue,
                 TrackedEntityDataValueFlow> MAPPER = new TrackedEntityDataValueMapper();
 
@@ -156,5 +168,25 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
         public Class<TrackedEntityDataValueFlow> getDatabaseEntityTypeClass() {
             return TrackedEntityDataValueFlow.class;
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }

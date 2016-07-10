@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
+import android.net.Uri;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -36,6 +38,9 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.annotation.provider.ContentUri;
+import com.raizlabs.android.dbflow.annotation.provider.TableEndpoint;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
@@ -47,7 +52,14 @@ import org.hisp.dhis.client.sdk.models.relationship.Relationship;
                 groupNumber = RelationshipFlow.UNIQUE_RELATIONSHIP_GROUP,
                 uniqueConflict = ConflictAction.FAIL)
 })
+@TableEndpoint(name = RelationshipFlow.NAME, contentProvider = DbDhis.class)
 public final class RelationshipFlow extends BaseModelFlow {
+
+    public static final String NAME = "RelationshipFlow";
+
+    @ContentUri(path = NAME, type = ContentUri.ContentType.VND_MULTIPLE + NAME)
+    public static final Uri CONTENT_URI = ContentUtils.buildUriWithAuthority(DbDhis.AUTHORITY, NAME);
+
     public static final Mapper<Relationship, RelationshipFlow> MAPPER = new RelationshipMapper();
 
     static final int UNIQUE_RELATIONSHIP_GROUP = 93;
@@ -164,5 +176,25 @@ public final class RelationshipFlow extends BaseModelFlow {
         public Class<RelationshipFlow> getDatabaseEntityTypeClass() {
             return RelationshipFlow.class;
         }
+    }
+
+    @Override
+    public Uri getDeleteUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getInsertUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getUpdateUri() {
+        return CONTENT_URI;
+    }
+
+    @Override
+    public Uri getQueryUri() {
+        return CONTENT_URI;
     }
 }
